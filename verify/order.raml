@@ -2,30 +2,9 @@
 title: supermarket-api
 mediaType: application/json
 
-/:
+/productions:
   get:
-    description: 测试根路径
-    responses:
-      200:
-        body:
-          application/json:
-            schema: |
-              {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "type": "object",
-                "properties": {
-                  "items": {
-                    "type": "string"
-                  }
-                 }
-               }
-            example: |
-              {
-                "items": "/items"
-              }
-/items:
-  get:
-    description: 获取所有的商品列表
+    description: As a customer I can get all the productions then I can get productions to buy
     responses:
       200:
         body:
@@ -34,7 +13,7 @@ mediaType: application/json
               {
                 "$schema": "http://json-schema.org/draft-04/schema#",
                 "type": "array",
-                "items": {
+                "productions": {
                   "type": "object",
                   "properties": {
                     "price": {
@@ -68,7 +47,7 @@ mediaType: application/json
               ]
 
   post:
-    description: 插入一个商品信息
+    description: As an admin I can create a production so that customer can buy the production
     body:
       application/json:
         schema: |
@@ -111,12 +90,12 @@ mediaType: application/json
               }
             example: |
               {
-                "itemUri": "items/10"
+                "itemUri": "productions/10"
               }
 
   /{id}:
     get:
-      description: 根据商品id获取指定商品信息
+      description: As a customer I can view the production detail so that I can decide whether to buy the production or not.
       responses:
         200:
           body:
@@ -155,12 +134,12 @@ mediaType: application/json
                 }
 
     delete:
-      description: 删除指定商品id的商品信息
+      description: As a admin I can delete a production so that customer won't see outdated production
       responses:
         204:
 
     put:
-      description: 更新指定商品id的商品信息
+      description: As a admin I can update a production so that customer can see the newer production details
       body:
         application/json:
           schema: |
@@ -190,191 +169,9 @@ mediaType: application/json
       responses:
         204:
 
-/categories:
-  get:
-    description: 获取所有的分类列表
-    responses:
-      200:
-        body:
-          application/json:
-            schema: |
-              {
-                "$schema": "http://json-schema.org/draft-04/schema#",
-                "type": "object",
-                "required": true,
-                "totalCount": {
-                  "type": "integer"
-                },
-                "items": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "integer"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "categoryId": {
-                        "type": "integer"
-                       }
-                    },
-                    "required": ["name", "id", "categoryId"]
-                  }
-                }
-              }
-            example: |
-              {
-                "totalCount": 4,
-                "items": [
-                  {
-                    "categoryUri": "categories/1",
-                    "name": "all",
-                    "id": 1
-                  },
-                  {
-                    "categoryUri": "categories/2",
-                    "name": "fruits",
-                    "id": 2
-                  },
-                  {
-                    "categoryUri": "categories/3",
-                    "name": "tools",
-                    "id": 3
-                  },
-                  {
-                    "categoryUri": "categories/4",
-                    "name": "milks",
-                    "id": 4
-                  }
-                ]
-              }
-
-  post:
-    description: 插入一个分类信息
-    body:
-      application/json:
-        schema: |
-          {
-            "$schema": "http://json-schema.org/draft-04/schema#",
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "required": true
-              }
-            }
-          }
-        example: |
-          {
-            "name": "xxxx"
-          }
-    responses:
-      201:
-        body:
-          application/json:
-           schema: |
-             {
-               "$schema": "http://json-schema.org/draft-04/schema#",
-               "type": "object",
-               "properties": {
-                 "categoryUri": {
-                   "type": "string",
-                   "required": true
-                 }
-               }
-             }
-           example: |
-             {
-               "categoryUri": "xxxx"
-             }
-  /{id}:
-    get:
-      description: 根据分类id获取指定分类信息
-      responses:
-        200:
-          body:
-            application/json:
-              schema: |
-                {
-                  "$schema": "http://json-schema.org/draft-04/schema#",
-                  "type": "object",
-                  "properties": {
-                    "price": {
-                      "type": "number"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "categoryUri": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "integer"
-                    },
-                    "categoryId": {
-                      "type": "integer"
-                     }
-                  },
-                  "required": ["price", "name", "categoryUri", "id", "categoryId"]
-                }
-              example: |
-                {
-                  "price": 10,
-                  "categoryUri": "categories/2",
-                  "name": "apple",
-                  "id": 1,
-                  "categoryId": 2
-                }
-    delete:
-      description: 删除指定id的分类信息
-      responses:
-        204:
-          description: 删除成功
-        412:
-          description: 删除失败，该分类下还有商品，不能删除
-          body:
-            application/json:
-              schema: |
-                {
-                  "$schema": "http://json-schema.org/draft-04/schema#",
-                  "type": "object",
-                  "properties": {
-                    "meaasge": {
-                      "type": "string",
-                      "required": true
-                    }
-                   }
-                 }
-              example: |
-                {
-                  "meaasge": "该分类下还有商品，不能删除"
-                }
-    put:
-      description: 更新指定id的分类信息
-      body:
-        application/json:
-          schema: |
-            {
-              "$schema": "http://json-schema.org/draft-04/schema#",
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "required": true
-                }
-               }
-             }
-          example: |
-            {
-              "meaasge": "该分类下还有商品，不能删除"
-            }
-      responses:
-        204:
 /carts:
   get:
-    description: 获取所有的购物车列表
+    description: As a admin I can get all carts
     responses:
       200:
         body:
@@ -387,7 +184,7 @@ mediaType: application/json
                   "totalCount": {
                     "type": "number"
                   },
-                  "items": {
+                  "productions": {
                     "type": "array",
                     "properties": {
                       "id": {
@@ -396,7 +193,7 @@ mediaType: application/json
                       "userId": {
                         "type": "string"
                       },
-                      "items": {
+                      "productions": {
                         "type": "array",
                         "properties": {
                           "price": {
@@ -418,19 +215,19 @@ mediaType: application/json
                         "required": ["price", "categoryId", "name", "categoryUri", "id"]
                       }
                     },
-                    "required": ["userId", "items", "id"]
+                    "required": ["userId", "productions", "id"]
                   },
-                  "required": ["totalCount", "items"]
+                  "required": ["totalCount", "productions"]
                 }
               }
             example: |
               {
                 "totalCount": 3,
-                "items": [
+                "productions": [
                   {
                     "id": 1,
                     "userId": 1,
-                    "items": [
+                    "productions": [
                       {
                         "price": 2,
                         "categoryUri": "categories/3",
@@ -450,7 +247,7 @@ mediaType: application/json
                   {
                     "id": 2,
                     "userId": 2,
-                    "items": [
+                    "productions": [
                       {
                         "price": 10,
                         "categoryUri": "categories/2",
@@ -471,7 +268,7 @@ mediaType: application/json
               }
 
   post:
-    description: 插入一个购物车信息
+    description: As a admin I can insert a cart so that customer can pay for productions
     body:
       application/json:
         schema: |
@@ -482,9 +279,9 @@ mediaType: application/json
               "userId": {
                 "type": "number"
               },
-              "items": {
+              "productions": {
                 "type": "array",
-                "items": {
+                "productions": {
                   "type": "integer"
                 }
               }
@@ -493,7 +290,7 @@ mediaType: application/json
         example: |
           {
             "userId": "1",
-            "items": [1, 2, 3]
+            "productions": [1, 2, 3]
           }
     responses:
       201:
@@ -515,7 +312,7 @@ mediaType: application/json
               }
   /{id}:
     get:
-      description: 根据购物车id获取指定购物车详细信息
+      description: As a admin I can get a cart details so that I can see what productions a customer has put into
       responses:
         200:
           body:
@@ -531,7 +328,7 @@ mediaType: application/json
                     "userId": {
                       "type": "number"
                     },
-                    "items": {
+                    "productions": {
                       "type": "array",
                       "properties": {
                         "price": {
@@ -558,7 +355,7 @@ mediaType: application/json
                 {
                   "id": 1,
                   "userId": 1,
-                  "items": [
+                  "productions": [
                     {
                       "price": 5,
                       "categoryUri": "categories/3",
@@ -584,12 +381,12 @@ mediaType: application/json
                 }
 
     delete:
-      description: 删除指定id的购物车信息
+      description: As a admin I can delete a cart so that customer can discard a cart when she/he doesn't want it
       responses:
         204:
 
     put:
-      description: 更新指定id的购物车信息
+      description: As a admin I can update a cart so that customer can modify producations she/he had put into cart
       body:
         application/json:
           schema: |
@@ -610,8 +407,8 @@ mediaType: application/json
       responses:
         204:
 
-    /items/{id}:
+    /productions/{id}:
       delete:
-        description: 删除指定 cart.id 下 items.id 的购物车信息
+        description: As a admin I can delete a production in a cart so that customer can remove production she/he doesn't want now
         responses:
           204:
