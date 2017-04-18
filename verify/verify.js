@@ -15,7 +15,7 @@ var productionId, productionURI, userName, cartURI, cartId;
 
 describe("Test", function () {
   this.timeout(60000);
-  it("POST /productions -> 201", function(done) {
+  it("POST /productions -> 201", function (done) {
     var options = {
       url: endpoint + '/productions',
       method: 'POST',
@@ -27,81 +27,18 @@ describe("Test", function () {
       },
       header: {}
     };
-
-    request(options, function(error, response, body) {
+    
+    request(options, function (error, response, body) {
       assert.isNull(error);
       assert.isNotNull(response, 'Response');
       assert.equal(response.statusCode, 201, "Expect 201, got " + response.statusCode);
-      var schema = "";
-      if (schema != '') {
-        // verify response body
-        body = (body == '' ? '[empty]' : body);
-        assert.doesNotThrow(function() {
-          JSON.parse(body);
-        }, JSON.SyntaxError, "Invalid JSON: " + body);
-        var json = JSON.parse(body);
-        var result = tv4.validateResult(json, schema);
-        assert.lengthOf(result.missing, 0, "Missing/unresolved JSON schema $refs (" + result.missing && result.missing.join(', ') + ") in schema: " + JSON.stringify(schema, null, 4) + " Error");
-        assert.ok(result.valid, "Got unexpected response body: " + result.error && result.error.message + " " + JSON.stringify(schema, null, 4) + " Error");
-      }
       productionURI = response.headers['location'];
-      console.log(JSON.stringify(response.headers, null, 2))
       var splits = productionURI.split("/");
       productionId = splits[splits.length - 1];
       done();
     });
   });
-
-  it("GET /productions/{productionId} -> 200", function(done) {
-    var options = {
-      url: endpoint + '/productions/' + productionId,
-      method: 'GET',
-      qs: {},
-      body: "",
-      header: {}
-    };
-
-    request(options, function(error, response, body) {
-      assert.isNull(error);
-      assert.isNotNull(response, 'Response');
-      assert.equal(response.statusCode, 200, "Expect 200, got " + response.statusCode);
-      var schema = {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "type": "object",
-        "properties": {
-          "price": {
-            "type": "number"
-          },
-          "name": {
-            "type": "string"
-          },
-          "categoryUri": {
-            "type": "string"
-          },
-          "id": {
-            "type": "integer"
-          },
-          "categoryId": {
-            "type": "integer"
-          }
-        },
-        "required": ["price", "name", "categoryUri", "id", "categoryId"]
-      };
-      if (schema != '') {
-        // verify response body
-        body = (body == '' ? '[empty]' : body);
-        assert.doesNotThrow(function() {
-          JSON.parse(body);
-        }, JSON.SyntaxError, "Invalid JSON: " + body);
-        var json = JSON.parse(body);
-        var result = tv4.validateResult(json, schema);
-        assert.lengthOf(result.missing, 0, "Missing/unresolved JSON schema $refs (" + result.missing && result.missing.join(', ') + ") in schema: " + JSON.stringify(schema, null, 4) + " Error");
-        assert.ok(result.valid, "Got unexpected response body: " + (result.error && result.error.message) + " " + JSON.stringify(schema, null, 4) + " Error");
-      }
-      done();
-    });
-  });
-
+  
   it("GET /productions -> 200", function (done) {
     var options = {
       url: endpoint + '/productions',
@@ -110,7 +47,7 @@ describe("Test", function () {
       body: '',
       header: {}
     };
-
+    
     request(options, function (error, response, body) {
       assert.isNull(error);
       assert.isNotNull(response, 'Response');
@@ -155,29 +92,46 @@ describe("Test", function () {
       done();
     });
   });
-
-  it("POST /carts -> 201", function(done) {
-    userName = 'scxu';
+  
+  it("GET /productions/{productionId} -> 200", function (done) {
     var options = {
-      url: endpoint + '/carts',
-      method: 'POST',
+      url: endpoint + '/productions/' + productionId,
+      method: 'GET',
       qs: {},
-      json: {
-        "userId": "1",
-        "productions": [1, 2, 3]
-      },
+      body: "",
       header: {}
     };
-
-    request(options, function(error, response, body) {
+    
+    request(options, function (error, response, body) {
       assert.isNull(error);
       assert.isNotNull(response, 'Response');
-      assert.equal(response.statusCode, 201, "Expect 201, got " + response.statusCode);
-      var schema = "";
+      assert.equal(response.statusCode, 200, "Expect 200, got " + response.statusCode);
+      var schema = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "categoryUri": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "categoryId": {
+            "type": "integer"
+          }
+        },
+        "required": ["price", "name", "categoryUri", "id", "categoryId"]
+      };
       if (schema != '') {
         // verify response body
         body = (body == '' ? '[empty]' : body);
-        assert.doesNotThrow(function() {
+        assert.doesNotThrow(function () {
           JSON.parse(body);
         }, JSON.SyntaxError, "Invalid JSON: " + body);
         var json = JSON.parse(body);
@@ -185,14 +139,164 @@ describe("Test", function () {
         assert.lengthOf(result.missing, 0, "Missing/unresolved JSON schema $refs (" + result.missing && result.missing.join(', ') + ") in schema: " + JSON.stringify(schema, null, 4) + " Error");
         assert.ok(result.valid, "Got unexpected response body: " + (result.error && result.error.message) + " " + JSON.stringify(schema, null, 4) + " Error");
       }
+      done();
+    });
+  });
+  
+  it("PUT /productions/{productionId} -> 204", function (done) {
+    var options = {
+      url: endpoint + '/productions/' + productionId,
+      method: 'PUT',
+      qs: {},
+      json: {
+        "name": "PUT",
+        "categoryId": 2,
+        "price": 1.2
+      },
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 204, "Expect 204, got " + response.statusCode);
+      done();
+    });
+  });
+  
+  it("DELETE /productions/{productionId} -> 204", function (done) {
+    var options = {
+      url: endpoint + '/productions/' + productionId,
+      method: 'DELETE',
+      qs: {},
+      json: {},
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 204, "Expect 204, got " + response.statusCode);
+      done();
+    });
+  });
+  
+  it("GET /productions/{productionId} -> 404", function (done) {
+    var options = {
+      url: endpoint + '/productions/' + productionId,
+      method: 'GET',
+      qs: {},
+      json: {},
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 404, "Expect 404, got " + response.statusCode);
+      done();
+    });
+  });
+  
+  
+  it("POST /carts -> 201", function (done) {
+    var options = {
+      url: endpoint + '/carts',
+      method: 'POST',
+      qs: {},
+      json: {
+        "userId": "1",
+        "productions": [{
+          "productionId": 1,
+          "amount": 2
+        },
+          {
+            "productionId": 2,
+            "amount": 3
+          }]
+      },
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 201, "Expect 201, got " + response.statusCode);
       cartURI = response.headers['location'];
       var splits = cartURI.split("/");
       cartId = splits[splits.length - 1];
       done();
     });
   });
-
-  it("GET /carts/{id} -> 200", function(done) {
+  
+  it("GET /carts -> 200", function (done) {
+    var options = {
+      url: endpoint + '/carts',
+      method: 'GET',
+      qs: {},
+      json: "",
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 200, "Expect 200, got " + response.statusCode);
+      var schema = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "number"
+          },
+          "productions": {
+            "type": "array",
+            "properties": {
+              "id": {
+                "type": "number",
+				"required": true
+              },
+              "userId": {
+                "type": "number",
+				"required": true
+              },
+              "productions": {
+                "type": "array",
+                "productions": {
+                  "type": "object",
+                  "properties": {
+                    "productionId": {
+                      "type": "integer",
+                      "required": true
+                    },
+                    "amount": {
+                      "type": "number",
+                      "required": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": ["totalCount", "productions"]
+        }
+      };
+      if (schema != '') {
+        // verify response body
+        body = (body == '' ? '[empty]' : body);
+        assert.doesNotThrow(function () {
+          JSON.parse(body);
+        }, JSON.SyntaxError, "Invalid JSON: " + body);
+        var json = JSON.parse(body);
+        var result = tv4.validateResult(json, schema);
+        assert.lengthOf(result.missing, 0, "Missing/unresolved JSON schema $refs (" + result.missing && result.missing.join(', ') + ") in schema: " + JSON.stringify(schema, null, 4) + " Error");
+        assert.ok(result.valid, "Got unexpected response body: " + (result.error && result.error.message) + " " + JSON.stringify(schema, null, 4) + " Error");
+      }
+      done();
+    });
+  });
+  
+  it("GET /carts/{cartId} -> 200", function (done) {
     var options = {
       url: endpoint + '/carts/' + cartId,
       method: 'GET',
@@ -200,8 +304,8 @@ describe("Test", function () {
       json: "",
       header: {}
     };
-
-    request(options, function(error, response, body) {
+    
+    request(options, function (error, response, body) {
       assert.isNull(error);
       assert.isNotNull(response, 'Response');
       assert.equal(response.statusCode, 200, "Expect 200, got " + response.statusCode);
@@ -210,30 +314,27 @@ describe("Test", function () {
         "type": "object",
         "properties": {
           "id": {
-            "type": "number"
+            "type": "number",
+			"required": true
           },
           "userId": {
-            "type": "number"
+            "type": "number",
+			"required": true
           },
           "productions": {
             "type": "array",
-            "properties": {
-              "price": {
-                "type": "number"
-              },
-              "id": {
-                "type": "number"
-              },
-              "categoryUri": {
-                "type": "string"
-              },
-              "name": {
-                "type": "string"
-              },
-              "categoryId": {
-                "type": "number"
-              },
-              "required": ["price", "categoryId", "name", "categoryUri", "id"]
+            "productions": {
+              "type": "object",
+              "properties": {
+                "productionId": {
+                  "type": "integer",
+                  "required": true
+                },
+                "amount": {
+                  "type": "number",
+                  "required": true
+                }
+              }
             }
           }
         }
@@ -241,7 +342,7 @@ describe("Test", function () {
       if (schema != '') {
         // verify response body
         body = (body == '' ? '[empty]' : body);
-        assert.doesNotThrow(function() {
+        assert.doesNotThrow(function () {
           JSON.parse(body);
         }, JSON.SyntaxError, "Invalid JSON: " + body);
         var json = JSON.parse(body);
@@ -252,4 +353,69 @@ describe("Test", function () {
       done();
     });
   });
+  
+  it("PUT /carts/{cartId} -> 204", function (done) {
+    var options = {
+      url: endpoint + '/carts/' + cartId,
+      method: 'PUT',
+      qs: {},
+      json: {
+        "userId": "1",
+        "productions": [
+          {
+            "productionId": 1,
+            "amount": 3
+          },
+          {
+            "productionId": 2,
+            "amount": 3
+          }
+        ]
+      },
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 204, "Expect 204, got " + response.statusCode);
+      done();
+    });
+  });
+  
+  it("DELETE /carts/{cartId} -> 204", function (done) {
+    var options = {
+      url: endpoint + '/carts/' + cartId,
+      method: 'DELETE',
+      qs: {},
+      json: {},
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 204, "Expect 204, got " + response.statusCode);
+      done();
+    });
+  });
+  
+  it("GET /carts/{cartId} -> 404", function (done) {
+    var options = {
+      url: endpoint + '/carts/' + cartId,
+      method: 'GET',
+      qs: {},
+      json: {},
+      header: {}
+    };
+    
+    request(options, function (error, response, body) {
+      assert.isNull(error);
+      assert.isNotNull(response, 'Response');
+      assert.equal(response.statusCode, 404, "Expect 404, got " + response.statusCode);
+      done();
+    });
+  });
+  
+  
 });
