@@ -11,7 +11,7 @@ var endpoint = process.env.ENDPOINT;
 
 console.log(endpoint);
 
-var productionId, productionURI, userName, cartURI, cartId;
+var productionId, productionURI, cartURI, cartId;
 
 describe("Test", function () {
   this.timeout(60000);
