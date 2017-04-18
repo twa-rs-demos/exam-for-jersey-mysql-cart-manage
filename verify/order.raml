@@ -223,7 +223,7 @@ mediaType: application/json
             example: |
               {
                 "totalCount": 3,
-                "productions": [
+                "carts": [
                   {
                     "id": 1,
                     "userId": 1,
@@ -268,7 +268,7 @@ mediaType: application/json
               }
 
   post:
-    description: As a admin I can insert a cart so that customer can pay for productions
+    description: As an admin I can insert a cart so that customer can pay for productions
     body:
       application/json:
         schema: |
@@ -282,7 +282,17 @@ mediaType: application/json
               "productions": {
                 "type": "array",
                 "productions": {
-                  "type": "integer"
+                  "type": "object",
+                  "properties": {
+                    "productionId": {
+                      "type": "integer",
+                      "required": true
+                    },
+                    "amount": {
+                      "type": "number",
+                      "required": true
+                    }
+                  }
                 }
               }
             }
@@ -290,7 +300,14 @@ mediaType: application/json
         example: |
           {
             "userId": "1",
-            "productions": [1, 2, 3]
+            "productions": [{
+                "productionId": 1,
+                "amount": 2
+              },
+              {
+                "productionId": 2,
+                "amount: 3
+              }]
           }
     responses:
       201:
@@ -397,6 +414,27 @@ mediaType: application/json
                 "userId": {
                   "type": "integer",
                   "required": true
+                },
+                "productions": {
+                  "type": "array",
+                  "properties": {
+                    "price": {
+                      "type": "number"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "categoryUri": {
+                      "type": "string"
+                    },
+                     "name": {
+                       "type": "string"
+                    },
+                     "categoryId": {
+                       "type": "number"
+                    },
+                    "required": ["price", "categoryId", "name", "categoryUri", "id"]
+                  }
                 }
                }
              }
