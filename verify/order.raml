@@ -191,31 +191,25 @@ mediaType: application/json
                         "type": "number"
                       },
                       "userId": {
-                        "type": "string"
+                        "type": "number"
                       },
                       "productions": {
                         "type": "array",
-                        "properties": {
-                          "price": {
-                            "type": "number"
-                          },
-                          "id": {
-                            "type": "integer"
-                          },
-                          "categoryUri": {
-                            "type": "string"
-                          },
-                           "name": {
-                             "type": "string"
-                          },
-                           "categoryId": {
-                             "type": "integer"
+                        "productions": {
+                          "type": "object",
+                          "properties": {
+                            "productionId": {
+                              "type": "integer",
+                              "required": true
+                            },
+                            "amount": {
+                              "type": "number",
+                              "required": true
+                            }
                           }
-                        },
-                        "required": ["price", "categoryId", "name", "categoryUri", "id"]
+                        }
                       }
-                    },
-                    "required": ["userId", "productions", "id"]
+                    }
                   },
                   "required": ["totalCount", "productions"]
                 }
@@ -229,38 +223,34 @@ mediaType: application/json
                     "userId": 1,
                     "productions": [
                       {
-                        "price": 2,
-                        "categoryUri": "categories/3",
-                        "name": "eraser",
-                        "id": 3,
-                        "categoryId": 3
+                        "productionId": 2,
+                        "amount": 5
                       },
                       {
-                        "price": 6,
-                        "categoryUri": "categories/2",
-                        "name": "orange",
-                        "id": 4,
-                        "categoryId": 2
+                        "productionId": 1,
+                        "amount": 3
+                      },
+                      {
+                        "productionId": 4,
+                        "amount": 2
                       }
                     ]
                   },
                   {
                     "id": 2,
-                    "userId": 2,
+                    "userId": 3,
                     "productions": [
                       {
-                        "price": 10,
-                        "categoryUri": "categories/2",
-                        "name": "apple",
-                        "id": 1,
-                        "categoryId": 2
+                        "productionId": 2,
+                        "amount": 5
                       },
                       {
-                        "price": 5,
-                        "categoryUri": "categories/3",
-                        "name": "pen",
-                        "id": 2,
-                        "categoryId": 3
+                        "productionId": 1,
+                        "amount": 3
+                      },
+                      {
+                        "productionId": 4,
+                        "amount": 2
                       }
                     ]
                   }
@@ -306,7 +296,7 @@ mediaType: application/json
               },
               {
                 "productionId": 2,
-                "amount: 3
+                "amount": 3
               }]
           }
     responses:
@@ -347,23 +337,18 @@ mediaType: application/json
                     },
                     "productions": {
                       "type": "array",
-                      "properties": {
-                        "price": {
-                          "type": "number"
-                        },
-                        "id": {
-                          "type": "number"
-                        },
-                        "categoryUri": {
-                          "type": "string"
-                        },
-                         "name": {
-                           "type": "string"
-                        },
-                         "categoryId": {
-                           "type": "number"
-                        },
-                        "required": ["price", "categoryId", "name", "categoryUri", "id"]
+                      "productions": {
+                        "type": "object",
+                        "properties": {
+                          "productionId": {
+                            "type": "integer",
+                            "required": true
+                          },
+                          "amount": {
+                            "type": "number",
+                            "required": true
+                          }
+                        }
                       }
                     }
                   }
@@ -374,25 +359,16 @@ mediaType: application/json
                   "userId": 1,
                   "productions": [
                     {
-                      "price": 5,
-                      "categoryUri": "categories/3",
-                      "name": "pen",
-                      "id": 2,
-                      "categoryId": 3
+                      "productionId": 2,
+                      "amount": 5
                     },
                     {
-                      "price": 2,
-                      "categoryUri": "categories/3",
-                      "name": "eraser",
-                      "id": 3,
-                      "categoryId": 3
+                      "productionId": 1,
+                      "amount": 3
                     },
                     {
-                      "price": 6,
-                      "categoryUri": "categories/2",
-                      "name": "orange",
-                      "id": 4,
-                      "categoryId": 2
+                      "productionId": 4,
+                      "amount": 2
                     }
                   ]
                 }
@@ -417,30 +393,33 @@ mediaType: application/json
                 },
                 "productions": {
                   "type": "array",
-                  "properties": {
-                    "price": {
-                      "type": "number"
-                    },
-                    "id": {
-                      "type": "number"
-                    },
-                    "categoryUri": {
-                      "type": "string"
-                    },
-                     "name": {
-                       "type": "string"
-                    },
-                     "categoryId": {
-                       "type": "number"
-                    },
-                    "required": ["price", "categoryId", "name", "categoryUri", "id"]
+                  "productions": {
+                    "type": "object",
+                    "properties": {
+                      "productionId": {
+                        "type": "integer",
+                        "required": true
+                      },
+                      "amount": {
+                        "type": "number",
+                        "required": true
+                      }
+                    }
                   }
                 }
-               }
-             }
+              }
+            }
           example: |
             {
-              "userId": 33
+              "userId": "1",
+              "productions": [{
+                  "productionId": 1,
+                  "amount": 3
+                },
+                {
+                  "productionId": 2,
+                  "amount": 3
+                }]
             }
       responses:
         204:
